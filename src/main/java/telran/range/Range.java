@@ -42,25 +42,35 @@ public class Range implements Iterable<Integer> {
         return new RangeIterator();
     }
 
+    public Integer getCurrent() {
+        return getCurrent();
+    }
+
     private class RangeIterator implements Iterator<Integer> {
         int current = min;
+        Integer cacheCurrent = 0;
 
         @Override
         public boolean hasNext() {
-            while (current <= max && !predicate.test(current)) {
-                current++;
-            }
             return current <= max;
         }
 
         @Override
         public Integer next() {
+            if (cacheCurrent == current) {
+                current++;
+            }
+                
+            while (!predicate.test(current)) {
+                current++;
+            }
+            cacheCurrent = current;
+
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
 
-            return current++;
+            return current;
         }
-        
     }
 }

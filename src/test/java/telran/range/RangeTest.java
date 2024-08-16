@@ -69,7 +69,7 @@ public class RangeTest {
     private Integer[] collectActualArray(Iterator<Integer> it, int length) {
         Integer[] array = new Integer[length];
         int index = 0;
-        while(it.hasNext()) {
+        while(index < length) {
             array[index++] = it.next();
         }
         return array;
