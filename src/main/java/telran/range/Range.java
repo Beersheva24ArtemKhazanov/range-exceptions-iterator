@@ -47,8 +47,11 @@ public class Range implements Iterable<Integer> {
     }
 
     private class RangeIterator implements Iterator<Integer> {
-        int current = min;
-        Integer cacheCurrent = 0;
+        private int current;
+
+        private RangeIterator() {
+            this.current = setCurrent(min);
+        }
 
         @Override
         public boolean hasNext() {
@@ -57,20 +60,20 @@ public class Range implements Iterable<Integer> {
 
         @Override
         public Integer next() {
-            if (cacheCurrent == current) {
-                current++;
-            }
-                
-            while (!predicate.test(current)) {
-                current++;
-            }
-            cacheCurrent = current;
-
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
+            Integer res = current;
+            current++;
+            current = setCurrent(current);
+            return res;
+        }
 
-            return current;
+        private int setCurrent(Integer nextCurrent) {
+            while(!predicate.test(nextCurrent)) {
+                nextCurrent++;
+            }
+            return nextCurrent;
         }
     }
 }
