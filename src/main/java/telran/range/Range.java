@@ -11,7 +11,7 @@ public class Range implements Iterable<Integer> {
     private static final String ERROR_MESSAGE = "max less or equal min";
     private int min;
     private int max;
-    private Predicate<Integer> predicate;
+    private Predicate<Integer> predicate = n -> true;
     private Range(int min, int max) {
         this.min = min;
         this.max = max;
@@ -42,15 +42,11 @@ public class Range implements Iterable<Integer> {
         return new RangeIterator();
     }
 
-    public Integer getCurrent() {
-        return getCurrent();
-    }
-
     private class RangeIterator implements Iterator<Integer> {
-        private int current;
+        int current = min - 1;
 
-        private RangeIterator() {
-            this.current = setCurrent(min);
+        public RangeIterator() {
+            setNextCurrent();
         }
 
         @Override
@@ -63,17 +59,16 @@ public class Range implements Iterable<Integer> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            Integer res = current;
-            current++;
-            current = setCurrent(current);
-            return res;
+            int toBeIterated = current;
+            setNextCurrent();
+            return toBeIterated;
         }
 
-        private int setCurrent(Integer nextCurrent) {
-            while(!predicate.test(nextCurrent)) {
-                nextCurrent++;
+        private void setNextCurrent() {
+            current++;
+            while (current <= max && !predicate.test(current)) {
+                current++;
             }
-            return nextCurrent;
         }
     }
 }
